@@ -31,7 +31,10 @@ export default function withAuth(ComponentToProtect) {
             }).catch(error => {
                 if(error.response.status === 401)
                     return this.setState({ loading:false, redirect: true })
+               //throw error message in future
+                return this.setState({ loading:false, redirect: true })
             })
+            
         }
 
         render() {

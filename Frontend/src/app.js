@@ -11,12 +11,10 @@ import Nav from './components/Nav/Nav';
 function App() {
   return (
     <div className="App">
-      <Nav/>
       <BrowserRouter>
+      <Nav/>
         <Switch>
-          <Route path="/login">
-            <Login/>
-          </Route>,
+          <Route path="/login"><Login/></Route>,
           <Route path="/home" component={withAuth(Home)} />,
           <Route path="/register" component={withAuth(Register)}/>
           <Route path="/createTicket" component={withAuth(createTicket)} />

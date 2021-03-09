@@ -91,6 +91,7 @@ class Register extends React.Component {
               value={this.state.firstName}
               onChange={(e) => this.setFirstName(e.target.value)}
               placeholder="First Name"
+              required
             />
           </Form.Group>
           <Form.Group size="lg" controlId="LastName">
@@ -99,6 +100,7 @@ class Register extends React.Component {
               value={this.state.lastName}
               onChange={(e) => this.setLastName(e.target.value)}
               placeholder="Last Name"
+              required
             />
           </Form.Group>
           <Form.Group size="lg" controlId="Email">
@@ -107,6 +109,7 @@ class Register extends React.Component {
               value={this.state.email}
               onChange={(e) => this.setEmail(e.target.value)}
               placeholder="Email"
+              required
             />
           </Form.Group>
           <Form.Group size="lg" controlId="Username">
@@ -124,13 +127,14 @@ class Register extends React.Component {
               value={this.state.password}
               onChange={(e) => this.setPassword(e.target.value)}
               placeholder="Password"
+              required
             />
           </Form.Group>
           <Form.Group size="lg" controlId="Type">
             <Form.Control as="select" onChange={(e) => this.setType(e.target.value)}>
-              <option value="Admin" selected>Admin</option>
+              <option value="Customer" selected>Customer</option>
               <option value="Support">Support</option>
-              <option value="Customer">Customer</option>
+              <option value="Admin">Admin</option>
             </Form.Control>
           </Form.Group>
           <Button block size="lg" type="submit">

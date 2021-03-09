@@ -37,7 +37,7 @@ class Login extends React.Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    const credentials = await this.loginPost();
+    await this.loginPost();
   }
 
   setUsername(Username) {

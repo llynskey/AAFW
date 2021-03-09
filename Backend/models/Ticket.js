@@ -3,12 +3,12 @@ var mongoose = require('mongoose');
 
 const Ticket = new mongoose.Schema({
     OwnerId:{
-        type:Number,
+        type:String,
         required:true
     },
 
     CreatorId:{
-        type:Number,
+        type:String,
         required:true
     },
 

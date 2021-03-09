@@ -39,16 +39,17 @@ function AuthenticateJWT(req, res, next) {
                 console.log("bad token")
                 return res.status(401).end();
             }
-            console.log("user token cunt" + userToken)
+           // console.log("user token cunt" + userToken)
+           req.user = decoded;
             next();
         });
     });
 }
 
-Router.post('/', AuthenticateJWT ,function(req, res, next) {
+Router.post('/', AuthenticateJWT, function(req, res, next) {
     //token has been authenticated
     console.log("yay")
-    res.send(200).end();
+    res.status(200).end();
 });
 
 Router.post('/login', (req, res, next) => {
@@ -69,7 +70,7 @@ Router.post('/login', (req, res, next) => {
                             msg: "Incorrect Password"
                         });
                     } else {
-                        console.log("true");
+                        console.log("user found");
 
                         jwt.sign({ userId: user._id, username: user.Username, userRole: user.Type }, privateKey, { expiresIn: '1d' }, (err, token) => {
                             console.log(token)
@@ -86,7 +87,7 @@ Router.post('/login', (req, res, next) => {
                             } catch (err) {
                                 console.log("token error");
                             }
-                            console.log("token time")
+                            console.log("user logged in")
                             res.json({
                                 token: 'Bearer ' + token
                             });
@@ -114,12 +115,6 @@ Router.post('/login', (req, res, next) => {
 
 });
 
-
-
-
-
-
-
 Router.post('/register', function(req, res) {
     try {
         var user = new userModel({
@@ -143,5 +138,27 @@ Router.post('/register', function(req, res) {
 
 });
 
+Router.post('/logout', AuthenticateJWT, function(req, res, next) {
+    console.log("idddd "+req.user.userId);
+    console.log("ting" + req.user);
+    tokenModel.deleteMany({"UserId": req.user.userId }, (err, result) => {
+        if (err) {
+            console.log("err")
+            res.status(500).end()
+        }
+
+        if (!result) {
+            console.log("could not delete user");
+        }
+        console.log(result)
+            //    console.log()
+            // res.status(200).json({
+            // msg:"User Logged out"
+            //   });
+
+        console.log("user logged out")
+
+    })
+})
 
 module.exports = Router;
