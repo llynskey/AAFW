@@ -75,10 +75,16 @@ class Home extends React.Component {
                     <h1>{title}</h1>
                     <h2>{subtitle}</h2>
                 </div>
-                <div className="buttons">
-                    <button href="/createTicket">Create Ticket</button>
+                <div class="input-group mt-5">
+                    <div class="form-outline">
+                        <input type="search" id="form1" class="form-control" />
+                        <label class="form-label" for="form1">Search</label>
+                    </div>
+                    <button type="button" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
-                <Table className="mt-5 mx-5">
+                <Table className="mt-5">
                     <thead>
                         <tr>
                             <th>Title</th>

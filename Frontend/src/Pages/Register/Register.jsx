@@ -16,7 +16,7 @@ class Register extends React.Component {
       email: "",
       username: "",
       password: "",
-      type: ""
+      type: "Client" // set to selected value in switch
     }
 
     this.registerPost = this.registerPost.bind(this);
@@ -79,6 +79,7 @@ class Register extends React.Component {
 
   setType(Type) {
     this.setState({ "type": Type });
+    console.log("type"+ this.state.type);
   }
 
   render() {
@@ -131,8 +132,8 @@ class Register extends React.Component {
             />
           </Form.Group>
           <Form.Group size="lg" controlId="Type">
-            <Form.Control as="select" onChange={(e) => this.setType(e.target.value)}>
-              <option value="Customer" selected>Customer</option>
+            <Form.Control as="select" value={this.state.type} onChange={(e) => this.setType(e.target.value)}>
+              <option selected value="Client">Client</option>
               <option value="Support">Support</option>
               <option value="Admin">Admin</option>
             </Form.Control>

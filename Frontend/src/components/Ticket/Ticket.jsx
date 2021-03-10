@@ -35,9 +35,9 @@ class Ticket extends React.Component {
                 <td>{this.ticketValue.Status}</td>
                 <td>{this.ticketValue.createdAt}</td>
                 <td>
-                    <button type="button" class="btn btn-primary">Assign</button>
-                    <button type="button" class="btn btn-success" onClick={this.editTicket}>Edit</button>
-                    <button type="button" class="btn btn-danger" onClick={this.deleteTicket}>Delete</button>
+                    <button type="button" class="btn btn-primary mx-2">Assign</button>
+                    <button type="button" class="btn btn-success mx-2" onClick={this.editTicket}>Edit</button>
+                    <button type="button" class="btn btn-danger mx-2" onClick={this.deleteTicket}>Delete</button>
                 </td>
 
             </tr>
