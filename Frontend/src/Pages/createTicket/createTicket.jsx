@@ -73,9 +73,7 @@ class createTicket extends React.Component {
                             onChange={(e) => this.setDescription(e.target.value)}
                         />
                     </Form.Group>
-                   <Button block size="lg" type="submit">
-                        Create Ticket
-                </Button>
+                   <Button block size="lg" type="submit"> Create Ticket </Button>
                 </Form>
             </div>
         )

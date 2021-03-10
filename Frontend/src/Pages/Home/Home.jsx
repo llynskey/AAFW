@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import jumbotron from 'react-bootstrap/Jumbotron';
 import Card from 'react-bootstrap/Card';
-import Ticket from '../Home/Ticket/Ticket';
+import Table from 'react-bootstrap/Table';
+import Ticket from '../../components/Ticket/Ticket'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'
 import axios from 'axios';
@@ -60,14 +61,12 @@ class Home extends React.Component {
     render() {
         var title = `Hello ${this.state.username} and welcome to the UoK Ticket System`;
         var subtitle = `${this.state.accountType} Dashboard`
-        const tickets = this.state.tickets;
-        const items = [];
+        const ticketArray = this.state.tickets;
+        const tickets = [];
 
-        for (const [index, value] of tickets.entries()) {
-            items.push(
-                <Col xs={3}>
-                    <Ticket ticketValue={value}></Ticket>
-                </Col>
+        for (const [index, value] of ticketArray.entries()) {
+            tickets.push(
+                <Ticket key={index} ticketValue={value}></Ticket>
             );
         }
         return (
@@ -79,9 +78,19 @@ class Home extends React.Component {
                 <div className="buttons">
                     <button href="/createTicket">Create Ticket</button>
                 </div>
-                <Row className="justify-content-center">
-                    {items}
-                </Row>
+                <Table className="mt-5 mx-5">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Time Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tickets}
+                    </tbody>
+                </Table>
             </div>
         )
     }
