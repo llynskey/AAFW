@@ -1,14 +1,17 @@
 const { Timestamp } = require('mongodb');
-var mongoose = require('mongoose');
+var {Schema, model} = require('mongoose');
+var userModel = require('./User');
 
-const Ticket = new mongoose.Schema({
-    OwnerId:{
-        type:String,
-        required:true
-    },
+const Ticket = new Schema({
+    Owner:{ 
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: true
+        },
 
-    CreatorId:{
-        type:String,
+    Creator:{
+        type: Schema.Types.ObjectId,
+        ref: "users",
         required:true
     },
 
@@ -30,5 +33,7 @@ const Ticket = new mongoose.Schema({
 { timestamps: true }
 );
 
-module.exports = mongoose.model('Tickets', Ticket);
+Ticket.index({'Owner.FirstName':'text', Creator:'text',Status:'text', Title: 'text', Description:'text' })
+
+module.exports = model('Tickets', Ticket);
 

@@ -1,11 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from "axios";
-import PropTypes from 'prop-types';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./Register.css";
-import { Redirect } from "react-router-dom";
-//import Login from "./containers/Login";
 
 class Register extends React.Component {
   constructor(props) {
@@ -16,7 +13,7 @@ class Register extends React.Component {
       email: "",
       username: "",
       password: "",
-      type: "Client" // set to selected value in switch
+      type: "Client" // set to default selected value in user role switch
     }
 
     this.registerPost = this.registerPost.bind(this);
@@ -27,9 +24,7 @@ class Register extends React.Component {
     this.setUsername = this.setUsername.bind(this);
     this.setPassword = this.setPassword.bind(this);
     this.setType = this.setType.bind(this);
-
   }
-
 
   async registerPost() {
     console.log("type"+ this.state.type);
@@ -40,17 +35,14 @@ class Register extends React.Component {
       Username: this.state.username,
       Password: this.state.password,
       Type: this.state.type
-    }).then((res) => {
+    },{headers: { 'Authorization': `${localStorage.getItem('jwt')}`}}).then((res) => {
       if (res.status === 200) {
         document.location.href = '/login';
       } else {
         console.error("registration error");
       }
-    })
+    });
   }
-
-
-
 
   async handleSubmit(e) {
     e.preventDefault();
@@ -120,6 +112,7 @@ class Register extends React.Component {
               value={this.state.username}
               onChange={(e) => this.setUsername(e.target.value)}
               placeholder="Username"
+              required
             />
           </Form.Group>
           <Form.Group size="lg" controlId="Pass">
@@ -144,7 +137,7 @@ class Register extends React.Component {
         </Form>
       </div>
 
-    )
+    );
   }
 }
 

@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch} from 'react-router-dom';
 import { Login, Home ,Register, createTicket, updateTicket } from './Pages'; 
 import withAuth from './components/withAuth/withAuth';
 import Nav from './components/Nav/Nav';
+import ChatRoom from './Pages/Chat/Chat'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/register" component={withAuth(Register)}/>
           <Route path="/createTicket" component={withAuth(createTicket)} />
           <Route path="/editTicket:id" component={withAuth(updateTicket)} />
+          <Route exact path="/chat:roomId" component={ChatRoom} />
         </Switch>
       </BrowserRouter>
     </div>

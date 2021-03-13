@@ -3,48 +3,9 @@ var Router = express.Router();
 var userModel = require('../models/User');
 var tokenModel = require('../models/Token')
 var jwt = require('jsonwebtoken');
+var AuthenticateJWT = require('../Middleware');
 
-const privateKey = 'shhhhhh'
-
-function AuthenticateJWT(req, res, next) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        console.log("no authH")
-        return res.status(401).end();
-    }
-    console.log(authHeader);
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, privateKey, (err, decoded) => {
-        if (err) {
-            console.log("no t v");
-            return res.status(401).json({
-                msg: "Token could not be verified"
-            });
-        }
-        if (!decoded) {
-            console.log("no user");
-            res.status(401).end();
-        }
-        tokenModel.findOne({ "Token": token }, (err, userToken) => {
-            if (err) {
-                console.log(err + err)
-                throw err;
-            }
-            if (!userToken) {
-                console.log("no user token")
-                return res.status(401).end();
-            }
-            if (userToken.UserRole != decoded.userRole || userToken.UserId != decoded.userId) {
-                console.log("bad token")
-                return res.status(401).end();
-            }
-           // console.log("user token cunt" + userToken)
-           req.user = decoded;
-            next();
-        });
-    });
-}
+const privateKey = 'shhhhhhh';
 
 Router.post('/', AuthenticateJWT, function(req, res, next) {
     //token has been authenticated
@@ -115,33 +76,39 @@ Router.post('/login', (req, res, next) => {
 
 });
 
-Router.post('/register', function(req, res) {
-    try {
-        var user = new userModel({
-            FirstName: req.body.FirstName,
-            LastName: req.body.LastName,
-            Email: req.body.Email,
-            Username: req.body.Username,
-            Password: req.body.Password,
-            Type: req.body.Type
+Router.post('/register', AuthenticateJWT, function(req, res) {
+    if (req.user.userRole == "Admin") {
+        try {
+            var user = new userModel({
+                FirstName: req.body.FirstName,
+                LastName: req.body.LastName,
+                Email: req.body.Email,
+                Username: req.body.Username,
+                Password: req.body.Password,
+                Type: req.body.Type
+            });
+            user.save();
+        } catch (err) {
+            console.log("error" + err);
+            throw err;
+        }
+        console.log(user);
+        console.log("new user added to the database")
+        res.status(200).json({
+            msg: "new user added to the database"
         });
-        user.save();
-    } catch (err) {
-        console.log("error" + err);
-        throw err;
+    } else {
+        res.status(401).json({
+            msg: "Insufficient Priviledges"
+        })
     }
-    console.log(user);
-    console.log("new user added to the database")
-    res.status(200).json({
-        msg: "new user added to the database"
-    });
 
 });
 
 Router.post('/logout', AuthenticateJWT, function(req, res, next) {
-    console.log("idddd "+req.user.userId);
+    console.log("idddd " + req.user.userId);
     console.log("ting" + req.user);
-    tokenModel.deleteMany({"UserId": req.user.userId }, (err, result) => {
+    tokenModel.deleteMany({ "UserId": req.user.userId }, (err, result) => {
         if (err) {
             console.log("err")
             res.status(500).end()
@@ -151,10 +118,10 @@ Router.post('/logout', AuthenticateJWT, function(req, res, next) {
             console.log("could not delete user");
         }
         console.log(result)
-            //    console.log()
-            // res.status(200).json({
-            // msg:"User Logged out"
-            //   });
+
+        res.status(200).json({
+            msg: "User Logged out"
+        });
 
         console.log("user logged out")
 

@@ -5,87 +5,64 @@ var tokenModel = require('../models/Token')
 var ticketModel = require('../models/Ticket');
 var connection = require('../db/db_connection')
 var jwt = require('jsonwebtoken');
+var AuthenticateJWT = require('../Middleware');
 
-
-const privateKey = 'shhhhhh';
-
-function AuthenticateJWT(req, res, next) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-        console.log("no authH")
-        return res.status(401).end();
-    }
-    console.log(authHeader);
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, privateKey, (err, decoded) => {
-        if (err) {
-            console.log("no t v");
-            return res.status(401).json({
-                msg: "Token could not be verified"
-            });
-        }
-        if (!decoded) {
-            console.log("no user");
-            res.status(401).end();
-        }
-        tokenModel.findOne({ "Token": token }, (err, userToken) => {
-            if (err) {
-                console.log(err + err)
-                throw err;
-            }
-            if (!userToken) {
-                console.log("no user token")
-                return res.status(401).end();
-            }
-            if (userToken.UserRole != decoded.userRole || userToken.UserId != decoded.userId) {
-                console.log("bad token")
-                return res.status(401).end();
-            }
-             console.log("user verified")
-            req.user = decoded;
-            next();
-        });
-    });
-}
 //get all tickets
-Router.get('/tickets', AuthenticateJWT, function(req, res) {
+Router.get('/tickets', AuthenticateJWT,function(req, res) {
+    var query = req.query.query;
+    ticketModel.find({}).populate('Creator').populate('Owner').exec(function(err, tickets) {
+        let results = []
+        for(ticket of tickets) {
+            if( ticket.Creator.FirstName.includes(query) ||
+                ticket.Creator.LastName.includes(query) ||
+                ticket.Owner.FirstName.includes(query) ||
+                ticket.Owner.LastName.includes(query) ||
+                ticket.Status.includes(query) ||
+                ticket.Title.includes(query) ||
+                ticket.Description.includes(query)) 
+                results.push(ticket)
+        }
+        res.status(200).json({data:results})
+    });
+
+    /*   ticketModel.find({}).populate('CreatorId').exec(function(err,users){
+          console.log(users); 
+       });*/
 
 });
-
-Router.get('/ticket:id', AuthenticateJWT, function(req, res,next) {
+//get a ticket by id
+Router.get('/ticket/:id', AuthenticateJWT, function(req, res, next) {
     console.log("working")
-    console.log("id "+req.query.ticketId)
+    console.log("id " + req.query.ticketId)
     ticketModel.findOne({ "_id": req.query.ticketId }, (err, ticket) => {
         console.log("shittttt")
         if (err) {
             console.log("Error getting ticket")
             res.status(500).json({
                 msg: "Error could not get Ticket"
-                }); 
-            }
-            if (!ticket) {
-                console.log("no Ticket")
-                res.status(500).json({
-                    msg: "Error could not find Ticket"
-                });
-            } else {
-                console.log("sending ticket")
-                res.status(200).json({
-                    ticket: ticket
-                })
-            }
-        
+            });
+        }
+        if (!ticket) {
+            console.log("no Ticket")
+            res.status(500).json({
+                msg: "Error could not find Ticket"
+            });
+        } else {
+            console.log("sending ticket")
+            res.status(200).json({
+                ticket: ticket
+            })
+        }
     })
 })
 
-// get a user's own ticket s
+// get a user's own tickets
 Router.get('/ticket', AuthenticateJWT, function(req, res) {
     const { userRole } = req.user;
     console.log(userRole);
     console.log(req.user.userId)
     if (userRole == "Client") {
-        ticketModel.find({ OwnerId: req.user.userId }, (err, tickets) => {
+        ticketModel.find({ Owner: req.user.userId }, (err, tickets) => {
             if (err) {
                 console.log(err);
                 throw err;
@@ -104,7 +81,7 @@ Router.get('/ticket', AuthenticateJWT, function(req, res) {
     }
 
     if (userRole == "Admin") {
-        ticketModel.find({ OwnerId: req.user.userId }, (err, tickets) => {
+        ticketModel.find({ Owner: req.user.userId }, (err, tickets) => {
             if (err) {
                 console.log(err);
                 throw err;
@@ -125,15 +102,15 @@ Router.get('/ticket', AuthenticateJWT, function(req, res) {
 });
 //update a ticket
 Router.put('/ticket:id', AuthenticateJWT, function(req, res) {
-    ticketModel.updateOne({"_id": req.query.ticketId},req.body.ticket, (error, result) => {
-            if (error) {
-                res.status(500).json({ msg: "Error: could not find ticket" });
-            }
-            if (!result) {
-                res.status(500).json({ msg: "Error: Ticket could not be updated" });
-            } else {
-                res.status(200).json({ msg: "Ticket updated Successfully" });
-            }
+    ticketModel.updateOne({ "_id": req.query.ticketId }, req.body.ticket, (error, result) => {
+        if (error) {
+            res.status(500).json({ msg: "Error: could not find ticket" });
+        }
+        if (!result) {
+            res.status(500).json({ msg: "Error: Ticket could not be updated" });
+        } else {
+            res.status(200).json({ msg: "Ticket updated Successfully" });
+        }
     })
 });
 //create a ticket
@@ -145,8 +122,8 @@ Router.post('/ticket', AuthenticateJWT, function(req, res) {
         try {
             console.log("saving ticket")
             var ticket = new ticketModel({
-                OwnerId: req.body.ownerId,
-                CreatorId: req.body.creatorId,
+                Owner: req.body.ownerId,
+                Creator: req.body.creatorId,
                 Status: 'Open',
                 Title: req.body.title,
                 Description: req.body.description

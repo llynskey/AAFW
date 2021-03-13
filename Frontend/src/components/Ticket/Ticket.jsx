@@ -9,9 +9,13 @@ class Ticket extends React.Component {
         this.ticketValue = props.ticketValue;
     }
 
+    chat=()=>{
+        document.location.href=`/chat:${this.ticketValue._id}`;
+    }
+
    editTicket = ()=>{
        console.log("yeah boi")
-        document.location.href=`/editTicket:${this.ticketValue._id}`
+        document.location.href=`/editTicket:${this.ticketValue._id}`;
     }
 
     deleteTicket = ()=>{
@@ -35,7 +39,7 @@ class Ticket extends React.Component {
                 <td>{this.ticketValue.Status}</td>
                 <td>{this.ticketValue.createdAt}</td>
                 <td>
-                    <button type="button" class="btn btn-primary mx-2">Assign</button>
+                    <button type="button" class="btn btn-primary mx-2" onClick={this.chat}>Chat</button>
                     <button type="button" class="btn btn-success mx-2" onClick={this.editTicket}>Edit</button>
                     <button type="button" class="btn btn-danger mx-2" onClick={this.deleteTicket}>Delete</button>
                 </td>

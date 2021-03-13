@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'
 import axios from 'axios';
 import JWT from 'jsonwebtoken';
+import Search from '../../components/Search/Search';
 //import './Home.css'
 
 
@@ -22,9 +23,9 @@ class Home extends React.Component {
             accountType: user.userRole,
             tickets: [],
         }
+
+       this.updateTickets = this.updateTickets.bind(this);
     }
-
-
 
     componentDidMount() {
         console.log("getting cards")
@@ -58,32 +59,30 @@ class Home extends React.Component {
         return <button>Show All Tickets</button>;
     }
 
+    updateTickets(tickets) {
+        this.setState({
+            "tickets": tickets
+        })
+    }
+
     render() {
         var title = `Hello ${this.state.username} and welcome to the UoK Ticket System`;
         var subtitle = `${this.state.accountType} Dashboard`
-        const ticketArray = this.state.tickets;
-        const tickets = [];
+        // const ticketArray = this.state.tickets;
+        // const ticketRows = [];
 
-        for (const [index, value] of ticketArray.entries()) {
-            tickets.push(
-                <Ticket key={index} ticketValue={value}></Ticket>
-            );
-        }
+        // for (const [index, value] of ticketArray) {
+        //     ticketRows.push(
+        //         <Ticket key={index} ticketValue={value}></Ticket>
+        //     );
+        // }
         return (
             <div className='Home'>
                 <div className="jumbotron">
                     <h1>{title}</h1>
                     <h2>{subtitle}</h2>
                 </div>
-                <div class="input-group mt-5">
-                    <div class="form-outline">
-                        <input type="search" id="form1" class="form-control" />
-                        <label class="form-label" for="form1">Search</label>
-                    </div>
-                    <button type="button" class="btn btn-primary">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
+                <Search updateTickets={this.updateTickets}/>
                 <Table className="mt-5">
                     <thead>
                         <tr>
@@ -91,10 +90,13 @@ class Home extends React.Component {
                             <th>Description</th>
                             <th>Status</th>
                             <th>Time Created</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {tickets}
+                        {this.state.tickets.map((value) => {
+                            return <Ticket key={value["_id"]} ticketValue={value}></Ticket>
+                        })}
                     </tbody>
                 </Table>
             </div>

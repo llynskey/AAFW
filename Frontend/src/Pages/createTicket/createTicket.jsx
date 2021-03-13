@@ -63,6 +63,7 @@ class createTicket extends React.Component {
                             type="text"
                             value={this.state.title}
                             onChange={(e) => this.setTitle(e.target.value)}
+                            required
                         />
                     </Form.Group>
                     <Form.Group size="lg" controlId="Password">
@@ -71,6 +72,7 @@ class createTicket extends React.Component {
                             type="text"
                             value={this.state.description}
                             onChange={(e) => this.setDescription(e.target.value)}
+                            required
                         />
                     </Form.Group>
                    <Button block size="lg" type="submit"> Create Ticket </Button>

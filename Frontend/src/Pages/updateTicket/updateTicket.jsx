@@ -88,6 +88,7 @@ class UpdateTicket extends React.Component {
                             type="text"
                             value={this.state.ticket.Title}
                             onChange={(e) => this.setTitle(e.target.value)}
+                            required
                         />
                     </Form.Group>
                     <Form.Group size="lg" controlId="Password">
@@ -96,6 +97,7 @@ class UpdateTicket extends React.Component {
                             type="text"
                             value={this.state.ticket.Description}
                             onChange={(e) => this.setDescription(e.target.value)}
+                            required
                         />
                     </Form.Group>
                     <Button block size="lg" type="submit"> Edit Ticket </Button>
