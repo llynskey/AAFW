@@ -2,55 +2,27 @@ import React from 'react';
 import axios from 'axios';
 import Card from 'react-bootstrap/Card';
 import { Redirect } from 'react-router';
+import TicketButtons from './TicketButtons'
 
 class Ticket extends React.Component {
     constructor(props) {
         super(props)
         this.ticketValue = props.ticketValue;
+        this.user = props.User;
     }
 
-    chat=()=>{
-        document.location.href=`/chat:${this.ticketValue._id}`;
-    }
-
-   editTicket = ()=>{
-       console.log("yeah boi")
-        document.location.href=`/editTicket:${this.ticketValue._id}`;
-    }
-
-    deleteTicket = ()=>{
-        console.log("delete ticket")
-         return axios.delete('http://localhost:1234/ticket:id',{
-            params:{ticketId: this.ticketValue._id},
-            headers: {'Authorization': `${localStorage.getItem('jwt')}`}
-          //   data :{ticketId: this.ticketValue._id} 
-        }).then((res)=>{
-            if(res.status === 200){
-                document.location.href='/home';
-            }
-        });
-    }
+    
 
     render() {
+        var Status = (this.ticketValue.Status == "Assigned" ? "Assigned to: " + this.ticketValue.AssignedTo.FirstName : this.ticketValue.Status)
         return (
             <tr>
+                <td>{this.ticketValue.Creator.FirstName + " " + this.ticketValue.Creator.LastName}</td>
+                <td>{this.ticketValue.Owner.FirstName + " " + this.ticketValue.Owner.LastName}</td>
                 <td>{this.ticketValue.Title}</td>
-                <td>{this.ticketValue.Description}</td>
-                <td>{this.ticketValue.Status}</td>
-                <td>{this.ticketValue.createdAt}</td>
-                <td>
-                    <button type="button" class="btn btn-primary mx-2" onClick={this.chat}>Chat</button>
-                    <button type="button" class="btn btn-success mx-2" onClick={this.editTicket}>Edit</button>
-                    <button type="button" class="btn btn-danger mx-2" onClick={this.deleteTicket}>Delete</button>
-                </td>
-
+                <td>{Status}</td>
+                <TicketButtons User={this.user} UserRole={this.user.userRole} TicketValue={this.ticketValue}></TicketButtons>
             </tr>
-
-
-            // <Card style={{ width: "100%", margin: "15px"}} border="secondary">
-            //     <Card.Header>{</Card.Header>
-            //     <Card.Body>{this.ticketValue.Description}</Card.Body>
-            // </Card>
         );
     }
 }

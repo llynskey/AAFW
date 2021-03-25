@@ -57,4 +57,3 @@ static loginUser(Username,req,res) {
 }
 
 module.exports = AuthController.loginUser();
-

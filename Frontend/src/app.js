@@ -6,6 +6,7 @@ import { Login, Home ,Register, createTicket, updateTicket } from './Pages';
 import withAuth from './components/withAuth/withAuth';
 import Nav from './components/Nav/Nav';
 import ChatRoom from './Pages/Chat/Chat'
+import ActionTicket from './Pages/ActionTicket/ActionTicket';
 
 
 function App() {
@@ -14,12 +15,13 @@ function App() {
       <BrowserRouter>
       <Nav/>
         <Switch>
-          <Route path="/login"><Login/></Route>,
-          <Route path="/home" component={withAuth(Home)} />,
-          <Route path="/register" component={withAuth(Register)}/>
-          <Route path="/createTicket" component={withAuth(createTicket)} />
-          <Route path="/editTicket:id" component={withAuth(updateTicket)} />
-          <Route exact path="/chat:roomId" component={ChatRoom} />
+          <Route exact path="/login"><Login/></Route>,
+          <Route exact path="/home" component={withAuth(Home)} />,
+          <Route exact path="/register" component={withAuth(Register)}/>
+          <Route exact path="/createTicket" component={withAuth(createTicket)} />
+          <Route exact path="/editTicket:id" component={withAuth(updateTicket)} />
+          <Route exact path="/chat:roomId" component={withAuth(ChatRoom)} />
+          <Route exact path="/actionTicket:id" component={withAuth(ActionTicket)}/>
         </Switch>
       </BrowserRouter>
     </div>

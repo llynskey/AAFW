@@ -7,9 +7,10 @@ var AuthenticateJWT = require('../Middleware');
 
 const privateKey = 'shhhhhhh';
 
-Router.post('/', AuthenticateJWT, function(req, res, next) {
+Router.get('/', AuthenticateJWT, function(req, res, next) {
     //token has been authenticated
     console.log("yay")
+    console.log(req.body.Page) 
     res.status(200).end();
 });
 
@@ -20,7 +21,7 @@ Router.post('/login', (req, res, next) => {
             userModel.findOne({ Username }, (err, user) => {
                 console.log(Username)
                 if (err)
-                    console.log("error");
+                    console.log("error" + err);
                 if (!user) {
                     res.status(401).json({
                         msg: "User Not Found"
@@ -57,9 +58,6 @@ Router.post('/login', (req, res, next) => {
                     }
                 }
             });
-
-
-
 
         } catch (error) {
             res.status(500).json({

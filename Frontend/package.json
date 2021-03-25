@@ -8,6 +8,7 @@
     "bootstrap-icons": "^1.4.0",
     "json-decode": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
     "path-to-regexp": "^1.7.0",
     "react": "^17.0.1",
     "react-bootstrap": "^1.5.1",

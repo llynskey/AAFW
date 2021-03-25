@@ -1,106 +1,173 @@
-import React, { useState } from "react";
-import jumbotron from 'react-bootstrap/Jumbotron';
-import Card from 'react-bootstrap/Card';
+import React, { useState, useEffect } from "react";
 import Table from 'react-bootstrap/Table';
 import Ticket from '../../components/Ticket/Ticket'
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col'
 import axios from 'axios';
 import JWT from 'jsonwebtoken';
 import Search from '../../components/Search/Search';
-//import './Home.css'
+
+const Home = (props) => {
+    var jwt = localStorage.getItem('jwt');
+    const token = jwt.split(' ')[1];
+    var user = JWT.decode(token);
+
+   const [myTickets,setMyTickets] = useState([])
+   const [allTickets, setAllTickets] = useState([]);
 
 
+    useEffect(() => {
+        switch (user.userRole) {
+            case "Client":
+                getUserTickets();
+                break;
+            case "Support":
+                getAllTickets();
+                getUserTickets();
+                
+                break;
 
-class Home extends React.Component {
-    constructor(props) {
-        var jwt = localStorage.getItem('jwt');
-        const token = jwt.split(' ')[1];
-        var user = JWT.decode(token);
-        super(props);
-        this.state = {
-            username: user.username,
-            accountType: user.userRole,
-            tickets: [],
+            case "Admin":
+                getAllTickets();
+                break;
         }
+    },[])
 
-       this.updateTickets = this.updateTickets.bind(this);
+    function setTickets(props){
+        console.log(props)
+        setAllTickets(props);
     }
 
-    componentDidMount() {
-        console.log("getting cards")
+    function getUserTickets() {
         axios.get('http://localhost:1234/ticket', {
             headers: {
                 'Authorization': `${localStorage.getItem('jwt')}`
             }
         }).then((res) => {
-            console.log(res.data.ticket[0]);
-            console.log("ticket " + res.data.ticket[0].Title);
-            this.setState({ tickets: res.data.ticket });
-
+            setMyTickets(res.data.tickets)
         });
     }
 
-    setCards(tickets) {
-        this.setState({ "tickets": tickets })
-        console.log("tickets loaded")
+    function getAllTickets() {
+        console.log("get All tickets")
+        axios.get('http://localhost:1234/tickets', {
+            params: {
+                query: ""
+            },
+            headers: {
+                'Authorization': `${localStorage.getItem('jwt')}`
+            }
+        }).then((res) => {
+            setAllTickets(res.data.data);
+            console.log(allTickets);
+        });
     }
 
 
-    clientButtons(props) {
+    function clientButtons(props) {
         return <button>Open Ticket</button>;
     }
 
-    supportButtons(props) {
+    function supportButtons(props) {
         return <button>Open Ticket on behalf</button>;
     }
 
-    adminButtons(props) {
+    function adminButtons(props) {
         return <button>Show All Tickets</button>;
     }
 
-    updateTickets(tickets) {
-        this.setState({
-            "tickets": tickets
-        })
-    }
-
-    render() {
-        var title = `Hello ${this.state.username} and welcome to the UoK Ticket System`;
-        var subtitle = `${this.state.accountType} Dashboard`
-        // const ticketArray = this.state.tickets;
-        // const ticketRows = [];
-
-        // for (const [index, value] of ticketArray) {
-        //     ticketRows.push(
-        //         <Ticket key={index} ticketValue={value}></Ticket>
-        //     );
-        // }
-        return (
-            <div className='Home'>
-                <div className="jumbotron">
-                    <h1>{title}</h1>
-                    <h2>{subtitle}</h2>
+        var title = `Hello ${user.username} and welcome to the UoK Ticket System`;
+        var subtitle = `${user.userRole} Dashboard`;
+        switch (user.userRole) {
+            case "Support":
+                return (<div className='Home'>
+                    <div className="jumbotron">
+                        <h1>{title}</h1>
+                        <h2>{subtitle}</h2>
+                    </div>
+                    <div>
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {myTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
+                    <div>
+                        <Search setAllTickets={setTickets} allTickets={allTickets} />
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
-                <Search updateTickets={this.updateTickets}/>
-                <Table className="mt-5">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Time Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.tickets.map((value) => {
-                            return <Ticket key={value["_id"]} ticketValue={value}></Ticket>
-                        })}
-                    </tbody>
-                </Table>
-            </div>
-        )
-    }
+                );
+            case "Admin":
+                return (
+                    <div className='Home'>
+                        <div className="jumbotron">
+                            <h1>{title}</h1>
+                            <h2>{subtitle}</h2>
+                        </div>
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {allTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
+                );
+            case "Client":
+                return (
+                    <div className='Home'>
+                        <div className="jumbotron">
+                            <h1>{title}</h1>
+                            <h2>{subtitle}</h2>
+                        </div>
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {myTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
+                );
+        }
 }
 export default Home;

@@ -1,36 +1,44 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
 
-class Search extends Component {
+const Search = (props) => {
 
-    constructor(props) {
-        super(props)
-        this.props = props;
+    const [allTickets, setTickets] = useState([])
+
+    useEffect(() => { 
+        const tickets = props.allTickets;
+        setTickets(tickets);
+    },[]) 
+
+    
+    const filterTickets = (e) => {
+        //const setAllTickets = props.setAllTickets;
+
+        const query = e.target.value;
+        if(query != ""){
+
+        let results = allTickets.filter(ticket => {
+            return JSON.stringify(ticket).toLowerCase().match(query);
+            
+        });
+
+        props.setAllTickets(results);
+    }else{
+        props.setAllTickets(allTickets)
+    }
+    
     }
 
-    filterTickets = (e) => {
-        axios.get('http://localhost:1234/tickets', {
-            params: {
-                query: e.target.value
-            },
-            headers: {
-                'Authorization': `${localStorage.getItem('jwt')}`
-            }
-        }).then(({ data }) => {
-            this.props.updateTickets(data.data)
-        })
-    }
 
-    render() {
-        return (
-            <>
-                <input
-                    placeholder="Search for ..."
-                    onChange={this.filterTickets}
-                />
-            </>
-        )
-    }
+    return (
+        <>
+            <input
+                placeholder="Search for ..."
+                onChange={filterTickets}
+            />
+        </>
+    )
+
 }
 
 export default Search;

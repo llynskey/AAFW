@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const cors = require('cors');
 const server = require("http").createServer();
+const db = require('./db/db_connection');
 const io = require("socket.io")(server, {
   cors: {
     origin: "*",

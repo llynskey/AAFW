@@ -2,7 +2,7 @@ import React from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import Logout from '../Logout/Logout';
+import Logout from '../../components/Logout/Logout'
 import JWT from 'jsonwebtoken';
 import axios from 'axios';
 
@@ -25,27 +25,27 @@ class NavbarClass extends React.Component {
     }
   }
 
-  managementActions() {
+  Actions() {
     if (this.state != null) {
       var user = this.state.user;
       if (user.userRole === 'Client') {
         return (
           <div>
-            <NavDropdown.Item href="/createTicket">Create Ticket</NavDropdown.Item>
+            <NavDropdown.Item href="/createTicket">Open Ticket</NavDropdown.Item>
           </div>
         )
       }
       if(user.userRole === 'Support'){
         return(
           <div>
-            
+            <NavDropdown.Item href="/createTicket">Open Ticket On Behalf Of Client</NavDropdown.Item>
           </div>
         )
       }
       if(user.userRole === 'Admin'){
         return(
           <div>
-            <NavDropdown.Item href="/"/>
+            <NavDropdown.Item href="/register">Register A New User</NavDropdown.Item>
           </div>
         )
       }
@@ -77,10 +77,10 @@ render() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="/home">Home</Nav.Link>
-          <Nav.Link href="/register">Register</Nav.Link>
-          <NavDropdown title="Management Actions" id="basic-nav-dropdown">
-            {this.managementActions()}
+          <NavDropdown title='Actions'>
+          {this.Actions()}
           </NavDropdown>
+            
           {this.loggedIn()}
         </Nav>
       </Navbar.Collapse>

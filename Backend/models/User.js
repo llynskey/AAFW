@@ -58,7 +58,6 @@ User.pre('save', function(next){
                     next(err);   
                 }else{
                     document.Password = hashedPass;
-                    console.log("saving")
                     next();
                 }
             });   

@@ -28,9 +28,9 @@ class UpdateTicket extends React.Component {
     
     async ticketPut() {
 
-       var jwt = localStorage.getItem('jwt');
+        const jwt = localStorage.getItem('jwt');
         const token = jwt.split(' ')[1];
-        var user = JWT.decode(token);
+        const user = JWT.decode(token);
         return await axios.put('http://localhost:1234/ticket:id', {
             ticket: this.state.ticket
         }, { params: {ticketId: this.state.ticket._id},headers: { 'Authorization': `${localStorage.getItem('jwt')}` } }).then((res) => {

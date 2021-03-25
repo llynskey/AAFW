@@ -15,12 +15,11 @@ export default function withAuth(ComponentToProtect) {
 
         componentDidMount() {
             console.log(ComponentToProtect)
-            axios.post('http://localhost:1234/user/', {
-               
+            axios.get('http://localhost:1234/user/', {
+               headers: {'Authorization': `${localStorage.getItem('jwt')}`},
                 "token": localStorage.getItem('jwt'),
                 "page": ComponentToProtect.name
-            },{ headers:{'Authorization': `${localStorage.getItem('jwt')}`}}).then((res) => {
-                console.log("res"+res)
+            }).then((res) => {
                 if (res.status === 200){
                     console.log("200")
                     return this.setState({ loading: false }); 
@@ -49,4 +48,3 @@ export default function withAuth(ComponentToProtect) {
         }
     }
 }
-//ReactDOM.render(<Home />, document.getElementById('root'));

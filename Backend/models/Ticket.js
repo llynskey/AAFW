@@ -1,39 +1,35 @@
 const { Timestamp } = require('mongodb');
-var {Schema, model} = require('mongoose');
+var { Schema, model } = require('mongoose');
 var userModel = require('./User');
 
 const Ticket = new Schema({
-    Owner:{ 
+    Owner: {
         type: Schema.Types.ObjectId,
         ref: "users",
         required: true
-        },
-
-    Creator:{
+    },
+    Creator: {
         type: Schema.Types.ObjectId,
         ref: "users",
-        required:true
+        required: true
     },
-
-    Status:{
+    AssignedTo: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
+        required: false
+    },
+    Status: {
         type: String,
         required: true
     },
-
-    Title:{
+    Title: {
         type: String,
         require: true
     },
-
-    Description:{
+    Description: {
         type: String,
         required: true
-    }    
-},
-{ timestamps: true }
-);
-
-Ticket.index({'Owner.FirstName':'text', Creator:'text',Status:'text', Title: 'text', Description:'text' })
+    }
+}, { timestamps: true });
 
 module.exports = model('Tickets', Ticket);
-
