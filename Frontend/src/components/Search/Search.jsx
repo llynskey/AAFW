@@ -8,7 +8,7 @@ const Search = (props) => {
     useEffect(() => { 
         const tickets = props.allTickets;
         setTickets(tickets);
-    },[]) 
+    },[allTickets]) 
 
     
     const filterTickets = (e) => {
