@@ -16,35 +16,38 @@ class Home extends React.Component {
         this.state = {
             user: user,
             myTickets: [],
-            allTickets: []
+            allTickets: [],
+            filteredTickets: []
         }
-
         this.setMyTickets = this.setMyTickets.bind(this);
         this.setAllTickets = this.setAllTickets.bind(this);
     }
 
     componentDidMount() {
-       switch (this.state.user.userRole) {
-        case "Client":
-            this.getUserTickets();
-            break;
-        case "Support":
-            this.getUserTickets();
-            this.getAllTickets();
-            break;
-        case "Admin":
-            this.getAllTickets();
-            break;
-       }
+        switch (this.state.user.userRole) {
+            case "Client":
+                this.getUserTickets();
+                break;
+            case "Support":
+                this.getUserTickets();
+                this.getAllTickets();
+                break;
+            case "Admin":
+                this.getAllTickets();
+                break;
+        }
     }
 
-    setMyTickets(myTickets){
-        this.setState({"myTickets": myTickets});
+    setFilteredTickets(filteredTickets){
+        this.setState({"filteredTickets": filteredTickets})
     }
 
-    setAllTickets(allTickets){
-        this.setState({"allTickets": allTickets});
-      //  console.log(this.state.allTickets)
+    setMyTickets(myTickets) {
+        this.setState({ "myTickets": myTickets });
+    }
+
+    setAllTickets(allTickets) {
+        this.setState({ "allTickets": allTickets });
     }
 
     getUserTickets() {
@@ -53,12 +56,11 @@ class Home extends React.Component {
                 'Authorization': `${localStorage.getItem('jwt')}`
             }
         }).then((res) => {
-           this.setMyTickets(res.data.tickets)
+            this.setMyTickets(res.data.tickets)
         });
     }
 
     getAllTickets() {
-        console.log("get All tickets")
         axios.get('http://localhost:1234/tickets', {
             params: {
                 query: ""
@@ -74,79 +76,109 @@ class Home extends React.Component {
     render() {
         var title = `Hello ${this.state.user.username} and welcome to the UoK Ticket System`;
         var subtitle = `${this.state.user.userRole} Dashboard`;
-        if (this.state.user.userRole == "Support") {
-            return (<div className='Home'>
-                <div className="jumbotron">
-                    <h1>{title}</h1>
-                    <h2>{subtitle}</h2>
-                </div>
-                <div>
-                <Table className="mt-5">
-                    <thead>
-                        <tr><th>Creator Name</th>
-                            <th>Owner Name</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Time Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.myTickets.map((value) => {
-                            return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
-                        })}
-                    </tbody>
-                </Table>
-                </div>
-                <div>
-                <Search setAllTickets={this.setAllTickets} allTickets={this.state.allTickets} />
-                <Table className="mt-5">
-                    <thead>
-                        <tr><th>Creator Name</th>
-                            <th>Owner Name</th>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                            <th>Time Created</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {this.state.allTickets.map((value) => {
-                            return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
-                        })}
-                    </tbody>
-                </Table>
-                </div>
-            </div>
-            );
-        } else
-            return (
-                <div className='Home'>
+        switch (this.state.user.userRole) {
+            case "Support":
+                return (<div className='Home'>
                     <div className="jumbotron">
                         <h1>{title}</h1>
                         <h2>{subtitle}</h2>
                     </div>
-                    <Table className="mt-5">
-                        <thead>
-                            <tr><th>Creator Name</th>
-                                <th>Owner Name</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Time Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {this.state.myTickets.map((value) => {
-                                return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
-                            })}
-                        </tbody>
-                    </Table>
+                    <div>
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Time Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.myTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
+                    <div>
+                        <Search setTickets={this.setFilteredTickets} tickets={this.state.allTickets} />
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Time Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.filteredTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
                 </div>
-            )
+                );
+            case "Admin":
+                return (
+                    <div className='Home'>
+                        <div className="jumbotron">
+                            <h1>{title}</h1>
+                            <h2>{subtitle}</h2>
+                        </div>
+                        <Search setTickets={this.setAllTickets} tickets={this.state.allTickets}/>
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Time Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.allTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
+                )
+            case "Client":
+                return(
+                    <div className='Home'>
+                        <div className="jumbotron">
+                            <h1>{title}</h1>
+                            <h2>{subtitle}</h2>
+                        </div>
+                        <Search setTickets={this.setMyTickets} tickets={this.state.myTickets}/>
+                        <Table className="mt-5">
+                            <thead>
+                                <tr><th>Creator Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Time Created</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {this.state.myTickets.map((value) => {
+                                    return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
+                                })}
+                            </tbody>
+                        </Table>
+                    </div>
+                )
+        }
     }
 }
 export default Home;

@@ -1,32 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
 
 const Search = (props) => {
 
-    const [allTickets, setTickets] = useState([])
+    const [tickets, setTickets] = useState([])
 
-    useEffect(() => { 
-        const tickets = props.allTickets;
+    useEffect(() => {
+        const tickets = props.tickets;
         setTickets(tickets);
-    },[allTickets]) 
+    }, [props.tickets])
 
-    
+
     const filterTickets = (e) => {
-        //const setAllTickets = props.setAllTickets;
-
         const query = e.target.value;
-        if(query != ""){
-
-        let results = allTickets.filter(ticket => {
-            return JSON.stringify(ticket).toLowerCase().match(query);
-            
-        });
-
-        props.setAllTickets(results);
-    }else{
-        props.setAllTickets(allTickets)
-    }
-    
+        if (query != "") {
+            let results = tickets.filter(ticket => {
+                return JSON.stringify(ticket).toLowerCase().match(query);
+                
+            });
+            props.setTickets(results);
+        } else {
+            props.setTickets(tickets)
+        }
     }
 
 
@@ -38,7 +32,6 @@ const Search = (props) => {
             />
         </>
     )
-
 }
 
 export default Search;

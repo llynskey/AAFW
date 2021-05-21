@@ -5,7 +5,6 @@ var AuthenticateJWT = require('../Middleware');
 
 //assign ticket to support user
 Router.put('/assign', AuthenticateJWT, function(req, res) {
-    console.log(req.body.id)
     ticketModel.updateOne({ "_id": req.query.id }, { "AssignedTo": req.body.id, "Status": "Assigned" }).populate('AssignedTo').exec(function(err, result) {
         if (err) {
             console.log("error " + err);
