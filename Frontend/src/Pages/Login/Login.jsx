@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import axios from 'axios';
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "./Login.css";
-import { Redirect } from "react-router-dom";
 
 class Login extends React.Component {
   constructor(props) {

@@ -20,9 +20,12 @@ class Ticket extends React.Component {
                 <td>{this.ticketValue.Creator.FirstName + " " + this.ticketValue.Creator.LastName}</td>
                 <td>{this.ticketValue.Owner.FirstName + " " + this.ticketValue.Owner.LastName}</td>
                 <td>{this.ticketValue.Title}</td>
-                <td>{Status}</td>
+                <td>{this.ticketValue.Description}</td>
+                <td>{this.ticketValue.Status}</td>
+                <td>{this.ticketValue.createdAt}</td>
                 <TicketButtons User={this.user} UserRole={this.user.userRole} TicketValue={this.ticketValue}></TicketButtons>
             </tr>
+
         );
     }
 }

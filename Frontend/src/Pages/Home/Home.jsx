@@ -21,6 +21,7 @@ class Home extends React.Component {
         }
         this.setMyTickets = this.setMyTickets.bind(this);
         this.setAllTickets = this.setAllTickets.bind(this);
+        this.setFilteredTickets = this.setFilteredTickets.bind(this);
     }
 
     componentDidMount() {
@@ -56,7 +57,7 @@ class Home extends React.Component {
                 'Authorization': `${localStorage.getItem('jwt')}`
             }
         }).then((res) => {
-            this.setMyTickets(res.data.tickets)
+            this.setMyTickets(res.data.tickets);
         });
     }
 
@@ -70,6 +71,7 @@ class Home extends React.Component {
             }
         }).then((res) => {
             this.setAllTickets(res.data.data);
+            this.setFilteredTickets(res.data.data);
         });
     }
 
@@ -79,7 +81,7 @@ class Home extends React.Component {
         switch (this.state.user.userRole) {
             case "Support":
                 return (<div className='Home'>
-                    <div className="jumbotron">
+                        <div className="jumbotron">
                         <h1>{title}</h1>
                         <h2>{subtitle}</h2>
                     </div>
