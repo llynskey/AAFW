@@ -15,7 +15,7 @@ export default function withAuth(ComponentToProtect) {
 
         componentDidMount() {
             console.log(ComponentToProtect)
-            axios.get('http://localhost:1234/user/', {
+            axios.get('http://localhost:1234/user/verify', {
                headers: {'Authorization': `${localStorage.getItem('jwt')}`},
                 "token": localStorage.getItem('jwt'),
                 "page": ComponentToProtect.name
@@ -29,6 +29,7 @@ export default function withAuth(ComponentToProtect) {
                 }
             }).catch(error => {
                 if(error.response.status === 401)
+                    localStorage.removeItem('jwt');
                     return this.setState({ loading:false, redirect: true })
                //throw error message in future
                 return this.setState({ loading:false, redirect: true })

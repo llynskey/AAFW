@@ -8,10 +8,10 @@ const ActionTicket = (props) => {
         getTicket();
     }, []);
 
-    function getTicket() {
+    async function getTicket() {
         let path = document.location.pathname
         var ticketId = path.split(':')[1];
-        return axios.get('http://localhost:1234/ticket:id', {
+        return axios.get('http://localhost:1234/ticket/ticket:id', {
             params: { ticketId: ticketId },
             headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
         }).then((res) => {
@@ -20,8 +20,8 @@ const ActionTicket = (props) => {
         });
     }
 
-    function solveTicket() {
-        return axios.put('http://localhost:1234/solve', {}
+    async function solveTicket() {
+        return axios.put('http://localhost:1234/ticket/solve', {}
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: ticket._id }
@@ -30,8 +30,8 @@ const ActionTicket = (props) => {
             });
     }
 
-    function suspendTicket() {
-        return axios.put('http://localhost:1234/suspend', {}
+    async function suspendTicket() {
+        return axios.put('http://localhost:1234/ticket/suspend', {}
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: ticket._id }
@@ -40,8 +40,8 @@ const ActionTicket = (props) => {
             });
     }
 
-    function ReallocateTicket() {
-        return axios.put('http://localhost:1234/reassign', {}
+    async function ReallocateTicket() {
+        return axios.put('http://localhost:1234/ticket/reassign', {}
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: ticket._id }
@@ -52,9 +52,8 @@ const ActionTicket = (props) => {
             });
     }
 
-    function deleteTicket() {
-        console.log("delete ticket")
-        return axios.delete('http://localhost:1234/ticket:id', {
+    async function deleteTicket() {
+        return axios.delete('http://localhost:1234/ticket/ticket:id', {
             params: { ticketId: ticket._id },
             headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
         }).then((res) => {

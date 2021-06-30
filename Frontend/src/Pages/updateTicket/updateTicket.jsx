@@ -9,7 +9,6 @@ class UpdateTicket extends React.Component {
 
     constructor(props) {
 
-      //  console.log(id);
         super(props);
         this.state = {
          ticket: {
@@ -20,45 +19,45 @@ class UpdateTicket extends React.Component {
          }
         }
 
-        this.ticketPost = this.ticketPut.bind(this);
+        this.ticketPost = this.updateTicket.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.ticket = this.setTitle.bind(this);
         this.ticket = this.setDescription.bind(this);
     }
     
-    async ticketPut() {
+    async updateTicket() {
 
         const jwt = localStorage.getItem('jwt');
         const token = jwt.split(' ')[1];
         const user = JWT.decode(token);
-        return await axios.put('http://localhost:1234/ticket:id', {
+        return await axios.put('http://localhost:1234/ticket/ticket:id', {
             ticket: this.state.ticket
         }, { params: {ticketId: this.state.ticket._id},headers: { 'Authorization': `${localStorage.getItem('jwt')}` } }).then((res) => {
-            console.log("here")
             if (res.status === 200) {
                 document.location.href = '/home';
             }
         });
     }
 
-    componentDidMount(){
-        let path = document.location.pathname
-        var ticketId =path.split(':')[1];
-        axios.get('http://localhost:1234/ticket:id',{
+    async getTicketById(){
+        axios.get('http://localhost:1234/ticket/ticket:id',{
             params:{ticketId: ticketId},
             headers:{'Authorization': `${localStorage.getItem('jwt')}` }
         }).then((res) =>{
             if(res.status === 200)
             this.setState({"ticket": res.data.ticket})
-            console.log(this.state)
-            console.log(this.state.ticket)
         })
+    }
+
+    componentDidMount(){
+        let path = document.location.pathname
+        var ticketId =path.split(':')[1];
+        this.getTicketById()
     }
 
     async handleSubmit(e) {
         e.preventDefault();
-        const ticketInfo = await this.ticketPut();
-       console.log(this.state);
+        const ticketInfo = await this.updateTicket();
     }
 
    /* setCreatorId(){

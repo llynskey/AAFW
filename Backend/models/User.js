@@ -38,11 +38,9 @@ const User = new mongoose.Schema({
 )
 
 User.methods.comparePassword = function(Password) {
-    console.log(Password)
     const document = this;
     
     let value = bcrypt.compareSync(Password, document.Password)
-    console.log(value);
     return  value;
 }
 

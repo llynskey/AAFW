@@ -15,8 +15,10 @@ const Token = new mongoose.Schema({
         required: true
     }
 },
-{timestamps: true}
-);
+{timestamps: true});
+
+Token.index( { "createdAt": 1 }, { expireAfterSeconds: 8600 } ) // Token Time to live set to 1 day in seconds
+
 
 module.exports = mongoose.model('userTokens', Token);
 

@@ -27,13 +27,16 @@ class Home extends React.Component {
     componentDidMount() {
         switch (this.state.user.userRole) {
             case "Client":
+                console.log("clinet")
                 this.getUserTickets();
                 break;
             case "Support":
+                console.log("support");
                 this.getUserTickets();
                 this.getAllTickets();
                 break;
             case "Admin":
+                console.log("support")
                 this.getAllTickets();
                 break;
         }
@@ -51,8 +54,8 @@ class Home extends React.Component {
         this.setState({ "allTickets": allTickets });
     }
 
-    getUserTickets() {
-        axios.get('http://localhost:1234/ticket', {
+    async getUserTickets() {
+        axios.get('http://localhost:1234/ticket/ticket', {
             headers: {
                 'Authorization': `${localStorage.getItem('jwt')}`
             }
@@ -61,8 +64,8 @@ class Home extends React.Component {
         });
     }
 
-    getAllTickets() {
-        axios.get('http://localhost:1234/tickets', {
+    async getAllTickets() {
+        axios.get('http://localhost:1234/ticket/tickets', {
             params: {
                 query: ""
             },
@@ -133,7 +136,7 @@ class Home extends React.Component {
                             <h1>{title}</h1>
                             <h2>{subtitle}</h2>
                         </div>
-                        <Search setTickets={this.setAllTickets} tickets={this.state.allTickets}/>
+                        <Search setTickets={this.setFilteredTickets} tickets={this.state.allTickets}/>
                         <Table className="mt-5">
                             <thead>
                                 <tr><th>Creator Name</th>
@@ -146,7 +149,7 @@ class Home extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.allTickets.map((value) => {
+                                {this.state.filteredTickets.map((value) => {
                                     return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
                                 })}
                             </tbody>
@@ -160,7 +163,7 @@ class Home extends React.Component {
                             <h1>{title}</h1>
                             <h2>{subtitle}</h2>
                         </div>
-                        <Search setTickets={this.setMyTickets} tickets={this.state.myTickets}/>
+                        <Search setTickets={this.setFilteredTickets} tickets={this.state.myTickets}/>
                         <Table className="mt-5">
                             <thead>
                                 <tr><th>Creator Name</th>
@@ -173,11 +176,17 @@ class Home extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.myTickets.map((value) => {
+                                {this.state.setFilteredTickets.map((value) => {
                                     return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
                                 })}
                             </tbody>
                         </Table>
+                    </div>
+                )
+            default:
+                return(
+                    <div className="Home">
+                        <h1>Error</h1>
                     </div>
                 )
         }

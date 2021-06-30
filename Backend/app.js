@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const server = require("http").createServer();
 const db = require('./db/db_connection');
@@ -9,7 +9,7 @@ const io = require("socket.io")(server, {
     origin: "*",
   },
 });
-var indexRouter = require('./routes/index');
+var ticketRouter = require('./routes/ticket');
 var userRouter = require('./routes/user');
 
 var corsOptions = {
@@ -19,20 +19,15 @@ var corsOptions = {
 }
 
 //session options
-
 var app = express();
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+//app.use(bodyParser.json());
+//app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-
-
-//app.use(cookieParser());
 // view engine setup
-console.log("here")
-app.use('/', indexRouter);
+app.use('/ticket', ticketRouter);
 app.use('/user', userRouter);     
 
 const PORT = 4000;
@@ -72,7 +67,7 @@ app.use(function(err, req, res, next) {
 });
 
 server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`chat service listening on port ${PORT}`);
 });
 
 
@@ -81,6 +76,6 @@ app.listen('1234', function (err) {
     if(err){
         throw err;
     }
-})
+});
 
 module.exports = app;

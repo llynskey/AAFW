@@ -24,11 +24,8 @@ class Login extends React.Component {
       Username: this.state.username,
       Password: this.state.password
     }).then((res) => {
-      console.log(res)
       if (res.status === 200) {
-        console.log(res.data.token);
         localStorage.setItem('jwt', res.data.token);
-        console.log("redirecting")
         document.location.href = '/home';
       }
     });

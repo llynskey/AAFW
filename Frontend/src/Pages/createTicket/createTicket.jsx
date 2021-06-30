@@ -29,13 +29,12 @@ class createTicket extends React.Component {
     }
 
     async ticketPost() {
-        return axios.post("http://localhost:1234/ticket", {
+        return axios.post("http://localhost:1234/ticket/ticket", {
             ownerId: this.state.ownerId,
             creatorId: this.state.creatorId,
             title: this.state.title,
             description: this.state.description
         }, { headers: { 'Authorization': `${localStorage.getItem('jwt')}` } }).then((res) => {
-            console.log("here")
             if (res.status === 200) {
                 document.location.href = '/home';
             }

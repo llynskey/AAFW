@@ -27,7 +27,6 @@ class Register extends React.Component {
   }
 
   async registerPost() {
-    console.log("type"+ this.state.type);
     return axios.post('http://localhost:1234/user/register', {
       FirstName: this.state.firstName,
       LastName:  this.state.lastName,
@@ -71,7 +70,6 @@ class Register extends React.Component {
 
   setType(Type) {
     this.setState({ "type": Type });
-    console.log("type"+ this.state.type);
   }
 
   render() {

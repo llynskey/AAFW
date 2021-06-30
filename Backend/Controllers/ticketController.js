@@ -1,10 +1,6 @@
-var express = require('express');
-var Router = express.Router();
 var ticketModel = require('../models/Ticket');
-var AuthenticateJWT = require('../Middleware');
 
-//assign ticket to support user
-Router.put('/assign', AuthenticateJWT, function(req, res) {
+function assignTicket(req, res) {
     ticketModel.updateOne({ "_id": req.query.id }, { "AssignedTo": req.body.id, "Status": "Assigned" }).populate('AssignedTo').exec(function(err, result) {
         if (err) {
             console.log("error " + err);
@@ -14,45 +10,9 @@ Router.put('/assign', AuthenticateJWT, function(req, res) {
         }
         res.status(200).end();
     })
-});
-//reallocate a ticket to Open to be assigned to another support user
-Router.put('/reassign', AuthenticateJWT, function(req, res) {
-    ticketModel.updateOne({ "_id": req.query.id }, { "AssignedTo": undefined, "Status": "Open" }, function(err, result) {
-        if (err) {
-            console.log("error " + err);
-        }
-        if (!result) {
-            console.log("ticket not assigned");
-        }
-        res.status(200).end();
-    })
-});
-// suspend a ticket
-Router.put('/suspend', AuthenticateJWT, function(req, res) {
-    ticketModel.updateOne({ "_id": req.query.id }, { "Status": "Suspended" }, function(err, result) {
-        if (err) {
-            console.log("error " + err);
-        }
-        if (!result) {
-            console.log("ticket not suspended");
-        }
-        res.status(200).end();
-    })
-});
-// Solve a ticket
-Router.put('/solve', AuthenticateJWT, function(req, res) {
-    ticketModel.updateOne({ "_id": req.query.id }, { "Status": "Solved" }, function(err, result) {
-        if (err) {
-            console.log("error " + err);
-        }
-        if (!result) {
-            console.log("ticket not solved");
-        }
-        res.status(200).end();
-    });
-});
-//reopen ticket
-Router.put('/reopen', AuthenticateJWT, function(req, res) {
+}
+
+function reopenTicket(req, res) {
     ticketModel.updateOne({ "_id": req.query.id }, { "Status": "Assigned" }, function(err, result) {
         if (err) {
             console.log("error " + err);
@@ -62,9 +22,45 @@ Router.put('/reopen', AuthenticateJWT, function(req, res) {
         }
         res.status(200).end();
     });
-});
-//close ticket
-Router.put('/close', AuthenticateJWT, function(req, res) {
+}
+
+function suspendTicket(req, res) {
+    ticketModel.updateOne({ "_id": req.query.id }, { "Status": "Suspended" }, function(err, result) {
+        if (err) {
+            console.log("error " + err);
+        }
+        if (!result) {
+            console.log("ticket not suspended");
+        }
+        res.status(200).end();
+    })
+};
+
+function solveTicket(req, res) {
+    ticketModel.updateOne({ "_id": req.query.id }, { "Status": "Solved" }, function(err, result) {
+        if (err) {
+            console.log("error " + err);
+        }
+        if (!result) {
+            console.log("ticket not solved");
+        }
+        res.status(200).end();
+    });
+}
+
+function reassignTicket(req, res) {
+    ticketModel.updateOne({ "_id": req.query.id }, { "AssignedTo": undefined, "Status": "Open" }, function(err, result) {
+        if (err) {
+            console.log("error " + err);
+        }
+        if (!result) {
+            console.log("ticket not assigned");
+        }
+        res.status(200).end();
+    })
+}
+
+function closeTicket (req, res) {
     ticketModel.updateOne({ "_id": req.query.id }, { "Status": "Closed" }, function(err, result) {
         if (err) {
             console.log("error " + err);
@@ -74,11 +70,10 @@ Router.put('/close', AuthenticateJWT, function(req, res) {
         }
         res.status(200).end();
     });
-});
-//get all tickets
-Router.get('/tickets', AuthenticateJWT, function(req, res) {
+}
+
+function getAllTickets(req, res) {
     if (req.user.userRole === "Support" || req.user.userRole === "Admin") {
-        console.log(req.user.userRole)
         var query = req.query.query;
         ticketModel.find({}).populate('Creator').populate('Owner').populate('AssignedTo').exec(function(err, tickets) {
             for (ticket of tickets) {
@@ -111,9 +106,9 @@ Router.get('/tickets', AuthenticateJWT, function(req, res) {
     } else {
         res.status(403).end();
     }
-});
-// get a user's own tickets
-Router.get('/ticket', AuthenticateJWT, function(req, res) {
+}
+
+function getTicketsForUser(req, res) {
     const { userRole } = req.user;
     switch (userRole) {
         case "Client":
@@ -148,7 +143,6 @@ Router.get('/ticket', AuthenticateJWT, function(req, res) {
                     throw err;
                 }
                 if (tickets.length == 0) {
-                    console.log("tickets not found")
                     res.status(404).json({
                         msg: "Ticket Not Found"
                     });
@@ -161,7 +155,6 @@ Router.get('/ticket', AuthenticateJWT, function(req, res) {
                         delete ticket.Creator.Username;
                         delete ticket.Creator.Password;
                     });
-                    console.log("fuck" + tickets)
                     res.status(200).json({
                         tickets: tickets
                     })
@@ -179,38 +172,36 @@ Router.get('/ticket', AuthenticateJWT, function(req, res) {
                         msg: "Ticket Not Found"
                     });
                 } else {
-                    console.log(tickets)
                     res.status(200).json({
                         ticket: tickets
                     });
                 }
             });
     }
-});
-//get a ticket by id
-Router.get('/ticket:id', AuthenticateJWT, function(req, res) {
-        ticketModel.findOne({ "_id": req.query.ticketId }, (err, ticket) => {
-            if (err) {
-                console.log("Error getting ticket")
-                res.status(500).json({
-                    msg: "Error could not get Ticket"
-                });
-            }
-            if (!ticket) {
-                console.log("no Ticket")
-                res.status(500).json({
-                    msg: "Error could not find Ticket"
-                });
-            } else {
-                console.log("sending ticket")
-                res.status(200).json({
-                    ticket: ticket
-                })
-            }
-        })
+}
+
+function getTicketById (req, res) {
+    ticketModel.findOne({ "_id": req.query.ticketId }, (err, ticket) => {
+        if (err) {
+            console.log("Error getting ticket")
+            res.status(500).json({
+                msg: "Error could not get Ticket"
+            });
+        }
+        if (!ticket) {
+            console.log("no Ticket")
+            res.status(500).json({
+                msg: "Error could not find Ticket"
+            });
+        } else {
+            res.status(200).json({
+                ticket: ticket
+            })
+        }
     })
-    //update a ticket
-Router.put('/ticket:id', AuthenticateJWT, function(req, res) {
+}
+
+function updateTicketById(req, res) {
     ticketModel.updateOne({ "_id": req.query.ticketId }, req.body.ticket, (error, result) => {
         if (error) {
             res.status(500).json({ msg: "Error: could not find ticket" });
@@ -220,15 +211,12 @@ Router.put('/ticket:id', AuthenticateJWT, function(req, res) {
             res.status(200).json({ msg: "Ticket updated Successfully" });
         }
     })
-});
-//create a ticket
-Router.post('/ticket', AuthenticateJWT, function(req, res) {
-    console.log("trying to create ticket")
+}
+
+function createTicket (req, res) {
     const { userRole } = req.user;
-    console.log("role assigned " + userRole)
     if (userRole == 'Client' || userRole == 'Support') {
         try {
-            console.log("saving ticket")
             var ticket = new ticketModel({
                 Owner: req.body.ownerId,
                 Creator: req.body.creatorId,
@@ -244,15 +232,14 @@ Router.post('/ticket', AuthenticateJWT, function(req, res) {
             console.log(err);
             throw err;
         }
-        console.log("ticket saved")
     } else {
         res.status(403).json({
             msg: "Insufficient Privleges"
         });
     }
-});
-//delete a ticket
-Router.delete('/ticket:id', AuthenticateJWT, function(req, res) {
+}
+
+function deleteTicket(req,res) {
     ticketModel.deleteOne({ "_id": req.query.ticketId }, (err, result) => {
         if (err) {
             res.status(500).json({ msg: "Error: Ticket could not be deleted" });
@@ -262,10 +249,18 @@ Router.delete('/ticket:id', AuthenticateJWT, function(req, res) {
         } else {
             res.status(200).json({ msg: "Ticket deleted Successfully" });
         }
-    })
-});
+    });
+}
 
-
-
-
-module.exports = Router;
+exports.assignTicket = assignTicket;
+exports.reassignTicket = reassignTicket;
+exports.suspendTicket = suspendTicket;
+exports.solveTicket = solveTicket;
+exports.reopenTicket = reopenTicket;
+exports.closeTicket = closeTicket;
+exports.getAllTickets = getAllTickets;
+exports.getTicketsForUser = getTicketsForUser;
+exports.getTicketById = getTicketById;
+exports.updateTicketById = updateTicketById;
+exports.createTicket = createTicket;
+exports.deleteTicket = deleteTicket;

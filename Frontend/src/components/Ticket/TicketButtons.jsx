@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import axios from 'axios';
+import AssignTicket from '../assignTicket/assignTicket';
 
 const TicketButtons = (props) => {
 
@@ -8,20 +9,20 @@ const TicketButtons = (props) => {
     const TicketValue = props.TicketValue;
     const TicketStatus = props.TicketValue.Status;
 
-    function chat() {
+    async function chat() {
         document.location.href = `/chat:${TicketValue._id}`;
     }
 
-    function editTicket() {
+    async function editTicket() {
         document.location.href = `/editTicket:${TicketValue._id}`;
     }
 
-    function actionTicket() {
+    async function actionTicket() {
         document.location.href = `/actionTicket:${TicketValue._id}`;
     }
 
-    function reopenTicket() {
-        return axios.put('http://localhost:1234/reopen', {}
+    async function reopenTicket() {
+        axios.put('http://localhost:1234/ticket/reopen', {}
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: TicketValue._id }
@@ -32,8 +33,8 @@ const TicketButtons = (props) => {
             });
     }
 
-    function closeTicket() {
-        return axios.put('http://localhost:1234/close', {}
+    async function closeTicket() {
+        return axios.put('http://localhost:1234/ticket/close', {}
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: TicketValue._id }
@@ -44,12 +45,8 @@ const TicketButtons = (props) => {
             });
     }
 
-    function assignTicket() {
-
-    }
-
-    function AssignToSelf() {
-        axios.put(`http://localhost:1234/assign?id=${TicketValue._id}`, {
+    async function AssignToSelf() {
+        axios.put(`http://localhost:1234/ticket/assign?id=${TicketValue._id}`, {
             id: UserID
         }, { headers: { 'Authorization': `${localStorage.getItem('jwt')}` } }).then((res) => {
             if (res.status == 200) {
@@ -58,8 +55,8 @@ const TicketButtons = (props) => {
         });
     }
 
-    function deleteTicket() {
-        return axios.delete('http://localhost:1234/ticket:id', {
+    async function deleteTicket() {
+        return axios.delete('http://localhost:1234/ticket/ticket:id', {
             params: { ticketId: TicketValue._id },
             headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
         }).then((res) => {
@@ -75,7 +72,7 @@ const TicketButtons = (props) => {
                 case "Open":
                     return (
                         <td>
-                            <button type="button" class="btn btn-primary mx-2" onClick={assignTicket}>Assign Ticket</button>
+                            <AssignTicket ticketId={TicketValue._id}/>
                         </td>
                     );
                 case "Assigned":
@@ -93,7 +90,7 @@ const TicketButtons = (props) => {
                 case "Solved":
                     return (
                         <td>
-                            <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Close expired ticket</button>
+                            <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Cancel expired ticket</button>
                         </td>
                     );
                 default:
@@ -122,13 +119,13 @@ const TicketButtons = (props) => {
                     return (
                         <td>
                             <button type="button" class="btn btn-success mx-2" onClick={actionTicket}>View Full Ticket</button>
-                            <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Close abandoned ticket</button>
+                            <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Cancel abandoned ticket</button>
                         </td>
                     );
                 case "Solved":
                     return (
                         <td>
-                            <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Close expired ticket</button>
+                            <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Cancel expired ticket</button>
                         </td>
                     );
                 default:

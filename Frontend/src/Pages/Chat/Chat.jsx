@@ -20,7 +20,7 @@ const ChatRoom = (props) => {
 
   return (
     <div className="chat-room-container">
-      <h1 className="room-name">Room: {roomId}</h1>
+      <h1 className="room-name">Room Id: {roomId}</h1>
       <div className="messages-container">
         <ol className="messages-list">
           {messages.map((message, i) => (
@@ -49,4 +49,3 @@ const ChatRoom = (props) => {
 };
 
 export default ChatRoom;
-       

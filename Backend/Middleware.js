@@ -11,7 +11,6 @@ const AuthenticateJWT = function(req, res, next) {
         console.log("no authH")
         return res.status(401).end();
     }
-    console.log(authHeader);
     const token = authHeader.split(' ')[1];
     jwt.verify(token, privateKey, (err, decoded) => {
         if (err) {
