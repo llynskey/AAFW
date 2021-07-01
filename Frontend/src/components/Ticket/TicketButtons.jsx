@@ -7,7 +7,7 @@ const TicketButtons = (props) => {
     const UserID = props.User.userId;
     const UserRole = props.UserRole;
     const TicketValue = props.TicketValue;
-    const TicketStatus = props.TicketValue.Status;
+    const TicketStatus = props.TicketValue.TicketInstances[TicketValue.TicketInstances.length -1].Status;
 
     async function chat() {
         document.location.href = `/chat:${TicketValue._id}`;
@@ -17,19 +17,21 @@ const TicketButtons = (props) => {
         document.location.href = `/editTicket:${TicketValue._id}`;
     }
 
+    async function addMoreInformation() {
+        document.location.href = `/addMoreInformation:${TicketValue._id}`;
+    }
+
     async function actionTicket() {
         document.location.href = `/actionTicket:${TicketValue._id}`;
     }
 
     async function reopenTicket() {
-        axios.put('http://localhost:1234/ticket/reopen', {}
+        return axios.put('http://localhost:1234/ticket/reopen', {}
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: TicketValue._id }
-            }).then((res) => {
-                document.location.href = '/home';
             }).catch((err) => {
-                console.log(err);
+                alert(err.msg);
             });
     }
 
@@ -38,32 +40,28 @@ const TicketButtons = (props) => {
             , {
                 headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
                 , params: { id: TicketValue._id }
-            }).then((res) => {
-                document.location.href = '/home';
             }).catch((err) => {
-                console.log(err);
+                alert(err.msg);
             });
     }
 
     async function AssignToSelf() {
-        axios.put(`http://localhost:1234/ticket/assign?id=${TicketValue._id}`, {
+        return axios.put(`http://localhost:1234/ticket/assign?id=${TicketValue._id}`, {
             id: UserID
         }, { headers: { 'Authorization': `${localStorage.getItem('jwt')}` } }).then((res) => {
-            if (res.status == 200) {
-                document.location.href = '/home';
-            }
-        });
+        }).catch((err) =>{
+            alert(err.msg);
+        })
     }
 
     async function deleteTicket() {
         return axios.delete('http://localhost:1234/ticket/ticket:id', {
             params: { ticketId: TicketValue._id },
             headers: { 'Authorization': `${localStorage.getItem('jwt')}` }
-        }).then((res) => {
-            if (res.status === 200) {
-                document.location.href = '/home';
-            }
+        }).catch((err)=>{
+            alert(err.msg);
         });
+        
     }
 
     switch (UserRole) {
@@ -156,7 +154,7 @@ const TicketButtons = (props) => {
                 case "Suspended":
                     return (
                         <td>
-                            <button type="button" class="btn btn-primary mx-2" onClick={editTicket}>Add more information</button>
+                            <button type="button" class="btn btn-primary mx-2" onClick={addMoreInformation}>Add more information</button>
                             <button type="button" class="btn btn-danger mx-2" onClick={deleteTicket}>Cancel Ticket</button>
                         </td>
                     );

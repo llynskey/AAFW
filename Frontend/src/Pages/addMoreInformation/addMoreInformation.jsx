@@ -5,7 +5,7 @@ import JWT from 'jsonwebtoken'
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-class UpdateTicket extends React.Component {
+class AddMoreInformation extends React.Component {
 
     constructor(props) {
 
@@ -18,17 +18,17 @@ class UpdateTicket extends React.Component {
          }
         }
 
-        this.ticketPost = this.updateTicket.bind(this);
+        this.ticketPost = this.addMoreInformation.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.ticket = this.setTitle.bind(this);
         this.ticket = this.setDescription.bind(this);
     }
     
-    async updateTicket() {
+    async addMoreInformation() {
         const jwt = localStorage.getItem('jwt');
         const token = jwt.split(' ')[1];
         const user = JWT.decode(token);
-        return await axios.put('http://localhost:1234/ticket/ticket:id', {
+        return await axios.put('http://localhost:1234/ticket/information:id', {
             ticket: this.state.ticket
         }, { params: {ticketId: this.state.ticket._id},headers: { 'Authorization': `${localStorage.getItem('jwt')}` } }).then((res) => {
             if (res.status === 200) {
@@ -57,7 +57,7 @@ class UpdateTicket extends React.Component {
 
     async handleSubmit(e) {
         e.preventDefault();
-        const ticketInfo = await this.updateTicket();
+        const ticketInfo = await this.addMoreInformation();
     }
 
     setTitle(Title) {
@@ -77,9 +77,9 @@ class UpdateTicket extends React.Component {
 
     render() {
         return (
-            <div className="createTicket">
+            <div className="addMoreInformation">
                 <Form onSubmit={this.handleSubmit}>
-                    <Form.Group size="lg" controlId="Username">
+                    <Form.Group size="lg" controlId="Title">
                         <Form.Label>Title</Form.Label>
                         <Form.Control
                             autoFocus
@@ -89,7 +89,7 @@ class UpdateTicket extends React.Component {
                             required
                         />
                     </Form.Group>
-                    <Form.Group size="lg" controlId="Password">
+                    <Form.Group size="lg" controlId="Description">
                         <Form.Label>Description</Form.Label>
                         <Form.Control
                             type="text"
@@ -98,11 +98,11 @@ class UpdateTicket extends React.Component {
                             required
                         />
                     </Form.Group>
-                    <Button block size="lg" type="submit"> Edit Ticket </Button>
+                    <Button block size="lg" type="submit"> Add More Information </Button>
                 </Form>
             </div>
         )
     }
 }
 
-export default UpdateTicket;
+export default AddMoreInformation;

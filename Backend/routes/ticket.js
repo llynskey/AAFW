@@ -23,6 +23,8 @@ Router.get('/ticket', AuthenticateJWT, ticketController.getTicketsForUser);
 Router.get('/ticket:id', AuthenticateJWT, ticketController.getTicketById);
 //update a ticket
 Router.put('/ticket:id', AuthenticateJWT, ticketController.updateTicketById);
+//add information to ticket
+//Router.put('/information:id', AuthenticateJWT, ticketController.addMoreInformation);
 //create a ticket
 Router.post('/ticket', AuthenticateJWT, ticketController.createTicket);
 //delete a ticket

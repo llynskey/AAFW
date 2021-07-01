@@ -46,7 +46,7 @@ class AssignUser extends Component {
   }
 
   async getSupportUsers() {
-    axios.get('http://localhost:1234/user/supportUsers', {
+   return axios.get('http://localhost:1234/user/supportUsers', {
       headers: { "Authorization": `${localStorage.getItem('jwt')}` }
     }).then((res) => {
       this.setUsers(res.data);
@@ -55,14 +55,11 @@ class AssignUser extends Component {
   }
 
   async addSupportToUser() {
-    axios.put('http://localhost:1234/ticket/assign',{id: this.state.Selected.value}, {
+    return axios.put('http://localhost:1234/ticket/assign',{id: this.state.Selected.value}, {
      headers:{"Authorization":`${localStorage.getItem('jwt')}`} 
     ,params:{id: this.props.ticketId},
-    }).then((res) => {
-      if (res.status === 200) {
-        this.handleClose();
-        document.location.href='/home'
-      }
+    }).catch((err)=>{
+      alert(err.msg);
     })
   }
 

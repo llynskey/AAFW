@@ -13,9 +13,11 @@ const Ticket = new Schema({
         ref: "users",
         required: true
     },
+   TicketInstances:[{
+    
     AssignedTo: {
         type: Schema.Types.ObjectId,
-        ref: "users",
+        ref:"users",
         required: false
     },
     Status: {
@@ -30,6 +32,7 @@ const Ticket = new Schema({
         type: String,
         required: true
     }
+}]
 }, { timestamps: true });
 
 module.exports = model('Tickets', Ticket);

@@ -11,8 +11,6 @@ import axios from 'axios';
 
 class NavbarClass extends React.Component {
 
-
-
   constructor(props) {
     super(props);
     var jwt = localStorage.getItem('jwt');

@@ -7,10 +7,10 @@ class Logout extends React.Component {
     async logoutPost() {
         console.log("logging out")
         localStorage.removeItem('jwt');
-        axios.post("http://localhost:1234/user/logout", {
-        }, { headers: { 'Authorization': `${token}` } });
-        document.location.href='/login';
-        return;        
+        return axios.post("http://localhost:1234/user/logout", {
+        }, { headers: { 'Authorization': `${token}` } }).then(()=>{
+            document.location.href='/login';   
+        });
     }
 
 

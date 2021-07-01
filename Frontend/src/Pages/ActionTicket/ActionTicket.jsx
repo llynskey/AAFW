@@ -3,6 +3,7 @@ import axios from 'axios';
 
 const ActionTicket = (props) => {
     const [ticket, setTicket] = useState({})
+    const [ticketInstance, setTicketInstance] = useState({})
 
     useEffect(() => {
         getTicket();
@@ -17,6 +18,7 @@ const ActionTicket = (props) => {
         }).then((res) => {
             if (res.status === 200)
                 setTicket(res.data.ticket)
+                setTicketInstance(res.data.ticket.TicketInstances[res.data.ticket.TicketInstances.length -1])
         });
     }
 
@@ -64,7 +66,7 @@ const ActionTicket = (props) => {
     }
 
     function Buttons() {
-        switch (ticket.Status) {
+        switch (ticketInstance.Status) {
             case "Assigned":
                 return (
                     <div>
@@ -86,13 +88,12 @@ const ActionTicket = (props) => {
                 break;
         }
     }
-
     const Ticket = ticket;
     return (
         <div>
-            <h2>{Ticket.Title}</h2>
-            <p>{Ticket.Description}</p>
-            <p>{Ticket.Status}</p>
+            <h2>{ticketInstance.Title}</h2>
+            <p>{ticketInstance.Description}</p>
+            <p>{ticketInstance.Status}</p>
             <p>{Ticket.createdAt}</p>
             <p>{Ticket.updatedAt}</p><br></br>
             {Buttons()}

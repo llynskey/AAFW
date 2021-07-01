@@ -66,7 +66,9 @@ function login(req, res) {
 }
 
 function register(req, res) {
+    console.log("register")
     if (req.user.userRole == "Admin") {
+        console.log("admin");
         try {
             var user = new userModel({
                 FirstName: req.body.FirstName,

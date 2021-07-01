@@ -1,7 +1,7 @@
 const{Timestamp} = require('mongodb');
-var mongoose = require('mongoose');
+const {Schema, model} = require('mongoose');
 
-const Token = new mongoose.Schema({
+const Token = new Schema({
     UserId:{
         type: String,
         required: true
@@ -20,5 +20,5 @@ const Token = new mongoose.Schema({
 Token.index( { "createdAt": 1 }, { expireAfterSeconds: 8600 } ) // Token Time to live set to 1 day in seconds
 
 
-module.exports = mongoose.model('userTokens', Token);
+module.exports = model('userTokens', Token);
 
