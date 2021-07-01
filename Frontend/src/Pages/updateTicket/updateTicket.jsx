@@ -40,6 +40,8 @@ class UpdateTicket extends React.Component {
     }
 
     async getTicketById(){
+        let path = document.location.pathname
+        var ticketId =path.split(':')[1];
         axios.get('http://localhost:1234/ticket/ticket:id',{
             params:{ticketId: ticketId},
             headers:{'Authorization': `${localStorage.getItem('jwt')}` }
@@ -50,8 +52,7 @@ class UpdateTicket extends React.Component {
     }
 
     componentDidMount(){
-        let path = document.location.pathname
-        var ticketId =path.split(':')[1];
+        
         this.getTicketById()
     }
 

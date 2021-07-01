@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const uri = "mmongodb+srv://admin:toor@uok-ticketing-system.seb4f.mongodb.net/Users?retryWrites=true&w=majority";
+const uri = "mmongodb+srv://admin:toor@uok-ticketing-system.seb4f.mongodb.net/AFW?retryWrites=true&w=majority";
 
 class Database {
     constructor() {

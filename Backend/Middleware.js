@@ -36,7 +36,6 @@ const AuthenticateJWT = function(req, res, next) {
                 console.log("bad token")
                 return res.status(401).end();
             }
-            console.log("user verified")
             req.user = decoded;
             next();
         });

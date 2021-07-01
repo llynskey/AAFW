@@ -61,6 +61,7 @@ class Home extends React.Component {
             }
         }).then((res) => {
             this.setMyTickets(res.data.tickets);
+            this.setFilteredTickets(res.data.tickets);
         });
     }
 
@@ -176,7 +177,7 @@ class Home extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.setFilteredTickets.map((value) => {
+                                {this.state.filteredTickets.map((value) => {
                                     return <Ticket key={value["_id"]} ticketValue={value} User={this.state.user}></Ticket>
                                 })}
                             </tbody>

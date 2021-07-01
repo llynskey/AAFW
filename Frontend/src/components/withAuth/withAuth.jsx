@@ -28,7 +28,7 @@ export default function withAuth(ComponentToProtect) {
                     throw error;
                 }
             }).catch(error => {
-                if(error.response.status === 401)
+                if(error.status === 401)
                     localStorage.removeItem('jwt');
                     return this.setState({ loading:false, redirect: true })
                //throw error message in future
